@@ -14,19 +14,25 @@ var requestURL = 'http://www.indeed.com/jobs?q=%22Software+Engineer%22&l=San+Die
 
 
 
-
 function readPage(requestURL) {
     pageNum++;
     console.log('On page ' + pageNum)
+
+    var reachedPrevData = false;
+
     request(requestURL, function(error, response, html){
-        if(!error){
-            var $ = cheerio.load(html);            
+        if(error){
+            console.log('Got error', error)
+            finalize();
+        }
+        else {
+            var $ = cheerio.load(html);
 
             $('#resultsCol > .row.result').each(function(){
                 var $this = $(this);
 
                 jobID = $this.data('jk');
-                console.log('workin on id ', jobID);
+                console.log('Checking id %s against old results', jobID);
 
                 //Only add this job if it is actually new to us.
                 if (!prevIDs || prevIDs.indexOf(jobID) == -1) {               
@@ -39,34 +45,27 @@ function readPage(requestURL) {
                     results.push(latest);
                 }
                 else {
-                    console.log('found an identical. should move onto next page...');
+                    console.log('Found an identical, breaking operation.');
+                    reachedPrevData = true;
                     return false;
                 }
-            })
+            }); // /.each
 
             var $nextLink = $('.pagination > a').last();
-            if ($nextLink && pageNum < 1)  {
+            if (!reachedPrevData && $nextLink.length && pageNum < 2)  {
                 nextURL = "http://" + url.parse(requestURL).host + $nextLink.attr('href') 
                 readPage(nextURL);
             }
             else {
                 finalize();
             }
-
-            
         }
-        else {
-            console.log('got error', error)
-            finalize();
-
-        }
-
-    })
+    }); // /request
 }
 
 function finalize() {
     fs.writeFile('output.json', JSON.stringify(results, null, 4), function(err){
-        console.log('Appended some results!');
+        console.log('Finished writing to file');
     })
 }
 
