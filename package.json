@@ -8,8 +8,6 @@
   "dependencies": {
     "cheerio": "latest",
     "express": "latest",
-    "mongodb": "latest",
-    "monk": "latest",
     "request": "latest",
     "url": "^0.10.3"
   }

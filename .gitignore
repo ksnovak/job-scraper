@@ -75,3 +75,4 @@ $RECYCLE.BIN/
 *.lnk
 
 \data
+output.json

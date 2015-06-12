@@ -9,9 +9,8 @@ var requestURL = 'http://www.indeed.com/jobs?q=%22Software+Engineer%22&l=San+Die
     results = [{"company": "Test company", "URL": "http://www.google.com", "jobTitle": "King in the castle", "jobID": "1337"}],
     company, jobTitle, jobURL,
     pageNum = 0,
-    nextURL = "";
-
-fs.writeFile('output.json', '', function(err){})
+    nextURL = "",
+    prevIDs;
 
 
 
@@ -21,22 +20,32 @@ function readPage(requestURL) {
     console.log('On page ' + pageNum)
     request(requestURL, function(error, response, html){
         if(!error){
-            var $ = cheerio.load(html);
-            
+            var $ = cheerio.load(html);            
 
             $('#resultsCol > .row.result').each(function(){
                 var $this = $(this);
-                company = $this.find('.company').text();
-                jobURL = url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
-                jobTitle = $this.find('>h2>a').attr('title');
-                jobID = $this.data('jk');
 
-                var latest = {"company": company, "URL": jobURL, "jobTitle": jobTitle, "jobID": jobID};
-                results.push(latest);
+                jobID = $this.data('jk');
+                console.log('workin on id ', jobID);
+
+                //Only add this job if it is actually new to us.
+                if (!prevIDs || prevIDs.indexOf(jobID) == -1) {               
+
+                    company = $this.find('.company').text();
+                    jobURL = url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
+                    jobTitle = $this.find('>h2>a').attr('title');
+
+                    var latest = {"company": company, "URL": jobURL, "jobTitle": jobTitle, "jobID": jobID};
+                    results.push(latest);
+                }
+                else {
+                    console.log('found an identical. should move onto next page...');
+                    return false;
+                }
             })
 
             var $nextLink = $('.pagination > a').last();
-            if ($nextLink && pageNum < 3)  {
+            if ($nextLink && pageNum < 1)  {
                 nextURL = "http://" + url.parse(requestURL).host + $nextLink.attr('href') 
                 readPage(nextURL);
             }
@@ -62,5 +71,20 @@ function finalize() {
 }
 
 
-fs.writeFile('output.json', '', function(err){});
-readPage(requestURL);
+fs.readFile('output.json', function(err, data) {
+    if (err) 
+        throw err;
+
+    if (data.length) {
+        results = JSON.parse(data.toString());
+
+        //Get the IDs of the last 10 postings, so we can compare and ensure that there are no dupes
+        prevIDs = results.slice(-10).map(function(obj) {
+            return obj.jobID;
+        });
+
+        console.log(prevIDs);
+    }
+
+    readPage(requestURL);
+})
