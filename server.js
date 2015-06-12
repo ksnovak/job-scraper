@@ -7,8 +7,8 @@ var cheerio = require('cheerio'),
 
 var requestURL = 'http://www.indeed.com/jobs?q=%22Software+Engineer%22&l=San+Diego,+ca&jt=fulltime&sort=date',
     results = [{"company": "Test company", "URL": "http://www.google.com", "jobTitle": "King in the castle", "jobID": "1337"}],
-    company, jobTitle, jobURL,
     pageNum = 0,
+    jobID,
     nextURL = "",
     prevIDs;
 
@@ -28,21 +28,17 @@ function readPage(requestURL) {
         else {
             var $ = cheerio.load(html);
 
+            console.log('    Checking old results against... ');
+
             $('#resultsCol > .row.result').each(function(){
                 var $this = $(this);
 
                 jobID = $this.data('jk');
-                console.log('Checking id %s against old results', jobID);
+                console.log('         id %s', jobID);
 
                 //Only add this job if it is actually new to us.
-                if (!prevIDs || prevIDs.indexOf(jobID) == -1) {               
-
-                    company = $this.find('.company').text();
-                    jobURL = url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
-                    jobTitle = $this.find('>h2>a').attr('title');
-
-                    var latest = {"company": company, "URL": jobURL, "jobTitle": jobTitle, "jobID": jobID};
-                    results.push(latest);
+                if (!prevIDs || prevIDs.indexOf(jobID) == -1) {
+                    results.push(buildPostObject($this, "Indeed"));
                 }
                 else {
                     console.log('Found an identical, breaking operation.');
@@ -52,7 +48,7 @@ function readPage(requestURL) {
             }); // /.each
 
             var $nextLink = $('.pagination > a').last();
-            if (!reachedPrevData && $nextLink.length && pageNum < 2)  {
+            if (!reachedPrevData && $nextLink.length && pageNum < 1)  {
                 nextURL = "http://" + url.parse(requestURL).host + $nextLink.attr('href') 
                 readPage(nextURL);
             }
@@ -61,6 +57,21 @@ function readPage(requestURL) {
             }
         }
     }); // /request
+}
+
+function buildPostObject ($this, source) {
+    var jobPost = {};
+    switch (source) {
+        case "Indeed":
+            jobPost.source = source;
+            jobPost.company = $this.find('.company').text();
+            jobPost.URL     = url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
+            jobPost.jobTitle= $this.find('>h2>a').attr('title'); 
+            jobPost.jobID   = $this.data('jk');
+            break;
+    }
+
+    return jobPost
 }
 
 function finalize() {

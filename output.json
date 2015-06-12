@@ -6,6 +6,18 @@
         "jobID": "1337"
     },
     {
+        "company": "KellyMitchell Group",
+        "URL": "www.indeed.com/cmp/KellyMitchell-Group/jobs/Software-Engineer-fa35e123ae136b18?r=1",
+        "jobTitle": "Software Engineer",
+        "jobID": "fa35e123ae136b18"
+    },
+    {
+        "company": "The ProSource Group",
+        "URL": "www.indeed.com/rc/clk?jk=0b9c436dfbca8d1d",
+        "jobTitle": "DevOps Software Engineer",
+        "jobID": "0b9c436dfbca8d1d"
+    },
+    {
         "company": "Modis",
         "URL": "www.indeed.com/rc/clk?jk=545eb66b216fb988",
         "jobTitle": "Java Developer",
@@ -52,17 +64,5 @@
         "URL": "www.indeed.com/rc/clk?jk=bbd07626ea9b46a8",
         "jobTitle": "Staff Software Engineer - Platform-as-a-Service",
         "jobID": "bbd07626ea9b46a8"
-    },
-    {
-        "company": "KellyMitchell Group",
-        "URL": "www.indeed.com/cmp/KellyMitchell-Group/jobs/Software-Engineer-fa35e123ae136b18?r=1",
-        "jobTitle": "Software Engineer",
-        "jobID": "fa35e123ae136b18"
-    },
-    {
-        "company": "The ProSource Group",
-        "URL": "www.indeed.com/rc/clk?jk=0b9c436dfbca8d1d",
-        "jobTitle": "DevOps Software Engineer",
-        "jobID": "0b9c436dfbca8d1d"
     }
 ]
