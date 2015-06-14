@@ -81,20 +81,25 @@ function finalize() {
 }
 
 
-fs.readFile('output.json', function(err, data) {
-    if (err) 
-        throw err;
 
-    if (data.length) {
-        results = JSON.parse(data.toString());
 
-        //Get the IDs of the last 10 postings, so we can compare and ensure that there are no dupes
-        prevIDs = results.slice(-10).map(function(obj) {
-            return obj.jobID;
-        });
 
-        console.log(prevIDs);
-    }
+module.exports = function(){
+    fs.readFile('output.json', function(err, data) {
+        if (err) 
+            throw err;
 
-    readPage(requestURL);
-})
+        if (data.length) {
+            results = JSON.parse(data.toString());
+
+            //Get the IDs of the last 10 postings, so we can compare and ensure that there are no dupes
+            prevIDs = results.slice(-10).map(function(obj) {
+                return obj.jobID;
+            });
+
+            console.log(prevIDs);
+        }
+
+        readPage(requestURL);
+    })       
+}
