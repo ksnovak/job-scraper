@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	h1= title
+	p Welcome to #{title}
+	p meeeowww
+
+	- var posts = JSON.parse(listings);
+
+	each post in posts
+		li= post.jobTitle
