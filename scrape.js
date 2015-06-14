@@ -6,7 +6,7 @@ var cheerio = require('cheerio'),
 
 
 var requestURL = 'http://www.indeed.com/jobs?q=%22Software+Engineer%22&l=San+Diego,+ca&jt=fulltime&sort=date',
-    results = [{"company": "Test company", "URL": "http://www.google.com", "jobTitle": "King in the castle", "jobID": "1337"}],
+    results = [{"source": "localhost", "company": "Test company", "URL": "http://www.google.com", "jobTitle": "King in the castle", "jobID": "1337"}],
     pageNum = 0,
     jobID,
     nextURL = "",

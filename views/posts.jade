@@ -5,7 +5,8 @@ block content
 	p Welcome to #{title}
 	p meeeowww
 
-	- var posts = JSON.parse(listings);
+	- var posts = listings? JSON.parse(listings) : [];
 
 	each post in posts
-		li= post.jobTitle
+		li 
+			a(href='#{post.URL}') #{post.jobTitle} for #{post.company} (posted on #{post.source})
