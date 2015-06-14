@@ -7,7 +7,19 @@ router.get('/', function(req, res, next) {
 	fs.readFile('./output.json', function(err, data) {
 		if (err) throw err;
 
-  		res.render('posts', { title: 'daaata', listings: data.toString() });
+		var postings = JSON.parse(data.toString() || '[]');
+		postings.forEach(function(post, index){
+			post.displayClass = '';
+
+			if (post.jobTitle.search(/S(enio)?r/i) > -1) {
+				post.displayClass = 'Senior';
+			}
+			else if (post.jobTitle.search(/J(unio)?r/i) > -1) {
+				post.displayClass = 'Junior';
+			}
+		})
+
+  		res.render('posts', { listings: postings });
 		
 	})
 

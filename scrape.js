@@ -65,7 +65,7 @@ function buildPostObject ($this, source) {
         case "Indeed":
             jobPost.source = source;
             jobPost.company = $this.find('.company').text();
-            jobPost.URL     = url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
+            jobPost.URL     = url.parse(requestURL).protocol + '//' + url.parse(requestURL).host + $this.find('a').eq(0).attr('href');
             jobPost.jobTitle= $this.find('>h2>a').attr('title'); 
             jobPost.jobID   = $this.data('jk');
             break;
