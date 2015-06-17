@@ -7,9 +7,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 	fs.stat('./output.json', function(err, stats) {
 		
-		var lastModified = stats.mtime;
-
-
+		var lastModified = moment(stats.mtime).calendar();
 		
 		fs.readFile('./output.json', function(err, data) {
 			if (err) throw err;
